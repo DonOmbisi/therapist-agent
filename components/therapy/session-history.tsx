@@ -73,7 +73,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
           status: session.status,
           scheduledTime: new Date(session.scheduledTime),
           summary: session.summary,
-          title: session.title,
           isActive: session.id === params.sessionId,
         }))
         .sort((a, b) => b.scheduledTime.getTime() - a.scheduledTime.getTime());

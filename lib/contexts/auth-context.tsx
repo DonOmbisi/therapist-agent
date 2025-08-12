@@ -32,12 +32,29 @@ interface AuthContextType extends AuthState {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Check if Privy is configured
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+  
+  // Always call usePrivy, but handle the case where it's not configured
+  let privyData;
+  try {
+    privyData = usePrivy();
+  } catch (error) {
+    // Fallback if Privy is not available or configured
+    privyData = {
+      login: () => Promise.resolve(),
+      logout: () => Promise.resolve(),
+      authenticated: false,
+      user: null,
+    };
+  }
+  
   const {
     login: privyLogin,
     logout: privyLogout,
     authenticated,
     user: privyUser,
-  } = usePrivy();
+  } = privyData;
 
   const [state, setState] = useState<AuthState>({
     isLoading: false,

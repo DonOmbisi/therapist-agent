@@ -290,7 +290,6 @@ export async function completeTherapySession(
       .set({
         status: "completed",
         summary,
-        updatedAt: new Date(),
       })
       .where(eq(therapySessions.id, sessionId))
       .returning();

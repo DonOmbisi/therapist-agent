@@ -31,8 +31,6 @@ export async function POST(req: Request) {
       name: name || null,
       email: email || null,
       walletId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     return NextResponse.json({ success: true, user });

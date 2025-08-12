@@ -16,6 +16,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { LoginModal } from "@/components/auth/login-modal";
 import { SignInButton } from "@/components/auth/sign-in-button";
+import { createPrefetchOnHover } from "@/lib/utils/prefetch";
 
 export function Header() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -26,6 +27,12 @@ export function Header() {
     { href: "/about", label: "About Aura" },
   ];
 
+  // Create prefetch handlers for each route
+  const prefetchHandlers = navItems.reduce((acc, item) => {
+    acc[item.href] = createPrefetchOnHover(item.href);
+    return acc;
+  }, {} as Record<string, () => void>);
+
   return (
     <div className="w-full fixed top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="absolute inset-0 border-b border-primary/10" />
@@ -34,6 +41,7 @@ export function Header() {
           <Link
             href="/"
             className="flex items-center space-x-2 transition-opacity hover:opacity-80"
+            prefetch={true}
           >
             <AudioWaveform className="h-7 w-7 text-primary animate-pulse-gentle" />
             <div className="flex flex-col">
@@ -53,6 +61,8 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
+                  prefetch={true}
+                  onMouseEnter={prefetchHandlers[item.href]}
                 >
                   {item.label}
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
@@ -69,7 +79,7 @@ export function Header() {
                     asChild
                     className="hidden md:flex gap-2 bg-primary/90 hover:bg-primary"
                   >
-                    <Link href="/dashboard">
+                    <Link href="/dashboard" prefetch={true}>
                       <MessageCircle className="w-4 h-4 mr-1" />
                       Start Chat
                     </Link>
@@ -113,6 +123,7 @@ export function Header() {
                   href={item.href}
                   className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-primary/5 rounded-md transition-colors"
                   onClick={() => setIsMenuOpen(false)}
+                  prefetch={true}
                 >
                   {item.label}
                 </Link>
@@ -121,7 +132,7 @@ export function Header() {
                 asChild
                 className="mt-2 mx-4 gap-2 bg-primary/90 hover:bg-primary"
               >
-                <Link href="/chat">
+                <Link href="/chat" prefetch={true}>
                   <MessageCircle className="w-4 h-4" />
                   <span>Start Chat</span>
                 </Link>

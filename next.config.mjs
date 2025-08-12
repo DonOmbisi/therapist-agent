@@ -7,44 +7,27 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  experimental: {
-    appDir: true,
-    suppressHydrationWarning: true,
-    skipTypeChecking: true,
-    skipMiddlewareUrlNormalize: true,
-    missingSuspenseWithCSRBailout: false,
-  },
+  // Remove all experimental features for faster compilation
+  experimental: {},
 
-  reactStrictMode: false,
-
-  // Disable image optimization warnings
+  // Basic image optimization
   images: {
-    unoptimized: true,
+    formats: ['image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
 
-  // Ignore specific page extensions
-  pageExtensions: ["tsx", "ts", "jsx", "js"].filter(
-    (ext) => !ext.includes("spec")
-  ),
+  // Enable compression
+  compress: true,
 
-  // Configure webpack
-  webpack: (config, { isServer, dev }) => {
-    // Ignore specific modules that might cause issues
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      sharp$: false,
-      canvas$: false,
-    };
+  // Optimize powered by header
+  poweredByHeader: false,
 
-    return config;
-  },
+  // Enable React strict mode
+  reactStrictMode: true,
 
-  // Suppress specific console warnings
-  onDemandEntries: {
-    // Reduce console noise
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
+  // Optimize swc minification
+  swcMinify: true,
 };
 
 export default nextConfig;

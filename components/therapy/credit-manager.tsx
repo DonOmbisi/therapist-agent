@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LitService } from "@/lib/services/lit.service";
 import { Coins, TrendingUp, ArrowRightLeft } from "lucide-react";
-import { useAuth } from "@/lib/context/auth-context";
+import { useAuth } from "@/lib/contexts/auth-context";
 
 export function TherapyCreditManager() {
   const [credits, setCredits] = useState<number>(0);

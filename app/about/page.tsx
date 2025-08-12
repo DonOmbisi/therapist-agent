@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import {
   Shield,
@@ -84,12 +81,7 @@ export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-24">
       {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-20"
-      >
+      <div className="text-center mb-20 animate-fade-in">
         <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           About Aura3.0
         </h1>
@@ -97,24 +89,44 @@ export default function AboutPage() {
           We're revolutionizing mental health support by combining cutting-edge
           AI technology with the security and transparency of blockchain.
         </p>
-      </motion.div>
+      </div>
 
       {/* Mission Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
         {missions.map((mission, index) => (
-          <motion.div
+          <div
             key={mission.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="animate-fade-in-up"
+            style={{ animationDelay: `${index * 100}ms` }}
           >
-            <Card className="p-6 text-center h-full bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <Card className="p-6 text-center h-full bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]">
               <div className="mb-4 flex justify-center">{mission.icon}</div>
               <h3 className="text-xl font-semibold mb-3">{mission.title}</h3>
               <p className="text-muted-foreground">{mission.description}</p>
             </Card>
-          </motion.div>
+          </div>
         ))}
+      </div>
+
+      {/* Achievements Section */}
+      <div className="text-center mb-20 animate-fade-in" style={{ animationDelay: '300ms' }}>
+        <h2 className="text-3xl font-bold mb-12 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          Our Impact
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {achievements.map((achievement, index) => (
+            <div
+              key={achievement.label}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${400 + index * 100}ms` }}
+            >
+              <div className="text-3xl font-bold text-primary mb-2">
+                {achievement.number}
+              </div>
+              <div className="text-muted-foreground">{achievement.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

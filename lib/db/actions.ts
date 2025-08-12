@@ -17,6 +17,7 @@ export async function createUser(userData: {
   email: string;
   name: string;
   encryptedData: any;
+  walletId: string;
 }) {
   return await db.insert(users).values(userData).returning();
 }
@@ -170,16 +171,16 @@ export async function createActivity({
 
 export async function updateActivityStatus({
   activityId,
-  status,
+  completed,
   completedAt,
 }: {
   activityId: string;
-  status: string;
+  completed: boolean;
   completedAt?: Date;
 }) {
   return await db
     .update(activities)
-    .set({ status, completedAt })
+    .set({ completed, updatedAt: new Date() })
     .where(eq(activities.id, activityId))
     .returning();
 }
@@ -192,9 +193,9 @@ export async function getTodaysActivities(userId: string) {
     .select()
     .from(activities)
     .where(
-      and(eq(activities.userId, userId), gte(activities.scheduledFor, today))
+      and(eq(activities.userId, userId), gte(activities.timestamp, today))
     )
-    .orderBy(activities.scheduledFor);
+    .orderBy(activities.timestamp);
 }
 
 export async function getLatestHealthMetrics(userId: string) {

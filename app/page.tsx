@@ -18,9 +18,12 @@ import {
   Lock,
   MessageSquareHeart,
 } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
 import { useState, useEffect } from "react";
+import React from "react";
+
+// Import Dialog components directly (they are lightweight UI components)
 import {
   Dialog,
   DialogContent,
@@ -28,8 +31,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import React from "react";
+
+// Import Ripple directly
 import { Ripple } from "@/components/ui/ripple";
+
 
 export default function Home() {
   const emotions = [
@@ -139,7 +144,7 @@ export default function Home() {
               Find Peace
             </span>
             <br />
-            <span className="inline-block mt-2 bg-gradient-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
+            <span className="inline-block mt-2 bg-gradient-b from-foreground to-foreground/90 bg-clip-text text-transparent">
               of Mind
             </span>
           </h1>
@@ -241,8 +246,6 @@ export default function Home() {
 
       {/* Enhanced Features Grid */}
       <section className="relative py-20 px-4 overflow-hidden">
-        {/* <div className="absolute inset-0 bg-gradient-to-b from-background via-background/50 to-background" /> */}
-
         <div className="max-w-6xl mx-auto">
           <motion.div className="text-center mb-16 space-y-4 text-white ">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
@@ -358,8 +361,6 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Add custom animations to globals.css */}
     </div>
   );
 }
