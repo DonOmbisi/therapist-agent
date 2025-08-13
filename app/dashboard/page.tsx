@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, Suspense } from "react";
-import { motion } from "framer-motion";
 import {
   Brain,
   Calendar,
@@ -769,11 +768,7 @@ export default function Dashboard() {
       <Container className="pt-20 pb-8 space-y-6">
         {/* Header Section */}
         <div className="flex justify-between items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-2"
-          >
+          <div className="space-y-2 animate-fade-in">
             <h1 className="text-3xl font-bold text-foreground">
               Welcome back, {user?.name || "there"}
             </h1>
@@ -784,7 +779,7 @@ export default function Dashboard() {
                 day: "numeric",
               })}
             </p>
-          </motion.div>
+          </div>
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon">
               <Bell className="h-5 w-5" />

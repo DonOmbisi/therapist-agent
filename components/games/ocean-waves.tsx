@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+
 import { Waves, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -15,7 +15,7 @@ export function OceanWaves() {
   const [volume, setVolume] = useState(50);
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(SESSION_DURATION);
-  const waveControls = useAnimation();
+
   const [audio] = useState(new Audio("/sounds/waves.mp3"));
 
   useEffect(() => {
@@ -44,17 +44,7 @@ export function OceanWaves() {
         });
       }, 1000);
 
-      // Animate waves
-      waveControls.start({
-        y: [0, -20, 0],
-        transition: {
-          duration: BREATH_DURATION,
-          repeat: Infinity,
-          ease: "easeInOut",
-        },
-      });
-    } else {
-      waveControls.stop();
+      
     }
 
     return () => clearInterval(timer);
@@ -79,25 +69,16 @@ export function OceanWaves() {
     <div className="flex flex-col items-center justify-center h-[400px] space-y-8">
       <div className="relative w-48 h-48">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-500/20 to-transparent rounded-full blur-xl" />
-        <motion.div
-          animate={waveControls}
-          className="absolute inset-0 flex items-center justify-center"
+        <div
+          className="absolute inset-0 flex items-center justify-center animate-pulse"
         >
           <div className="relative">
             <Waves className="w-24 h-24 text-blue-600" />
-            <motion.div
-              animate={{
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: BREATH_DURATION,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-0 bg-blue-400/10 blur-xl rounded-full"
+            <div
+              className="absolute inset-0 bg-blue-400/10 blur-xl rounded-full animate-pulse"
             />
           </div>
-        </motion.div>
+                  </div>
       </div>
 
       <div className="w-64 space-y-6">

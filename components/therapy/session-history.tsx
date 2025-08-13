@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/lib/contexts/auth-context";
@@ -241,25 +241,23 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
           <LoadingSpinner />
         ) : Object.keys(filteredGroups).length === 0 ? (
           <EmptyState searchQuery={searchQuery} />
-        ) : (
-          <AnimatePresence>
-            {Object.entries(filteredGroups).map(([date, sessions]) => (
-              <div key={date} className="mb-4">
-                <div className="px-3 py-1 text-xs font-medium text-muted-foreground">
-                  {formatGroupDate(date)}
-                </div>
-                {sessions.map((session) => (
-                  <SessionCard
-                    key={session.id}
-                    session={session}
-                    onClick={() => router.push(`/therapy/${session.id}`)}
-                    getSessionTitle={getSessionTitle}
-                  />
-                ))}
-              </div>
-            ))}
-          </AnimatePresence>
-        )}
+                 ) : (
+           Object.entries(filteredGroups).map(([date, sessions]) => (
+             <div key={date} className="mb-4">
+               <div className="px-3 py-1 text-xs font-medium text-muted-foreground">
+                 {formatGroupDate(date)}
+               </div>
+               {sessions.map((session) => (
+                 <SessionCard
+                   key={session.id}
+                   session={session}
+                   onClick={() => router.push(`/therapy/${session.id}`)}
+                   getSessionTitle={getSessionTitle}
+                 />
+               ))}
+             </div>
+           ))
+         )}
       </div>
     </div>
   );
@@ -287,11 +285,8 @@ function SessionCard({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      className="px-1.5"
+    <div
+      className="px-1.5 animate-fade-in"
     >
       <Button
         variant="ghost"
@@ -325,7 +320,7 @@ function SessionCard({
           <div className="absolute right-2 top-2.5 w-1.5 h-1.5 rounded-full bg-primary" />
         )}
       </Button>
-    </motion.div>
+    </div>
   );
 }
 

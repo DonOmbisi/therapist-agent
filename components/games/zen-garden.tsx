@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+
 import { Flower2 } from "lucide-react";
 
 const items = [
@@ -34,17 +34,15 @@ export function ZenGarden() {
     <div className="space-y-4">
       <div className="flex justify-center gap-4">
         {items.map((item) => (
-          <motion.button
+          <button
             key={item.type}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
             onClick={() => setSelectedItem(item)}
-            className={`p-3 rounded-lg ${
+            className={`p-3 rounded-lg transform transition-transform hover:scale-110 active:scale-95 ${
               selectedItem.type === item.type ? "bg-primary/20" : "bg-primary/5"
             }`}
           >
             <span className="text-2xl">{item.icon}</span>
-          </motion.button>
+          </button>
         ))}
       </div>
 
@@ -53,19 +51,17 @@ export function ZenGarden() {
         className="relative w-full h-[400px] bg-primary/5 rounded-lg cursor-pointer overflow-hidden"
       >
         {placedItems.map((item, index) => (
-          <motion.div
+          <div
             key={index}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
             style={{
               position: "absolute",
               left: item.x - 12,
               top: item.y - 12,
             }}
-            className="text-2xl"
+            className="text-2xl animate-fade-in"
           >
             {item.icon}
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>

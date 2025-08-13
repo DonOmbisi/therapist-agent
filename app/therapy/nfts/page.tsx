@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { motion } from "framer-motion";
+
 import { useRouter } from "next/navigation";
 import { Badge as UIBadge } from "@/components/ui/badge";
 
@@ -73,10 +73,8 @@ const NFTCard = ({ token, onShare }: { token: Token; onShare: () => void }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="group relative"
+    <div
+      className="group relative animate-fade-in-up"
     >
       <div className="relative min-h-[400px] overflow-hidden rounded-2xl bg-gradient-to-br from-white via-white to-primary/5 dark:from-gray-900 dark:via-gray-900 dark:to-primary/20 p-6 shadow-xl ring-1 ring-primary/10 transition-all duration-300 hover:shadow-2xl hover:ring-primary/20">
         {/* Background effects */}
@@ -161,7 +159,7 @@ const NFTCard = ({ token, onShare }: { token: Token; onShare: () => void }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

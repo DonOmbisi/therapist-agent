@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { SessionHistory } from "@/components/therapy/session-history";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { useAuth } from "@/lib/contexts/auth-context";
 import Modal from "@/components/Modal";
 import {

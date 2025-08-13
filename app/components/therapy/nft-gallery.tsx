@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SessionNFT } from "./session-nft";
 import { Button } from "@/components/ui/button";
 import { Grid3X3, List, AlertCircle, Trophy } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface NFTGalleryProps {
@@ -107,23 +107,18 @@ export function NFTGallery({ sessions }: NFTGalleryProps) {
         </Alert>
       )}
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          layout
-          className={
-            viewMode === "grid"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              : "space-y-6"
-          }
-        >
+      <div
+        className={
+          viewMode === "grid"
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            : "space-y-6"
+        }
+      >
           {sessions.map((session, index) => (
-            <motion.div
+            <div
               key={session.sessionId}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="animate-fade-in"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <SessionNFT
                 sessionId={session.sessionId}
@@ -131,16 +126,14 @@ export function NFTGallery({ sessions }: NFTGalleryProps) {
                 metadata={session.metadata}
                 onShare={() => handleShare(session.sessionId)}
                 onDownload={() => handleDownload(session.imageUri)}
-              />
-            </motion.div>
-          ))}
+                             />
+             </div>
+           ))}
 
-          {sessions.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="col-span-full text-center py-16"
-            >
+                     {sessions.length === 0 && (
+             <div
+               className="col-span-full text-center py-16 animate-fade-in"
+             >
               <div className="max-w-md mx-auto space-y-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                   <Trophy className="w-8 h-8 text-primary" />
@@ -156,12 +149,11 @@ export function NFTGallery({ sessions }: NFTGalleryProps) {
                   onClick={() => (window.location.href = "/therapy")}
                 >
                   Start a New Session ✨
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+                                 </Button>
+               </div>
+             </div>
+           )}
+         </div>
     </div>
   );
 }

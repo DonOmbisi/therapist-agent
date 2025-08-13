@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,13 +33,10 @@ export function SessionNFT({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="relative group"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+    <div
+      className="relative group animate-fade-in"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Card className="overflow-hidden bg-gradient-to-br from-white via-white to-primary/5 dark:from-gray-900 dark:via-gray-900 dark:to-primary/20 border-primary/10 group-hover:border-primary/30 transition-all duration-300">
         <div className="relative aspect-square">
@@ -57,10 +54,10 @@ export function SessionNFT({
           />
 
           {/* Hover overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80 flex items-center justify-center gap-3 backdrop-blur-sm"
+          <div
+            className={`absolute inset-0 bg-gradient-to-b from-black/60 to-black/80 flex items-center justify-center gap-3 backdrop-blur-sm transition-opacity duration-300 ${
+              isHovered ? "opacity-100" : "opacity-0"
+            }`}
           >
             <Button
               variant="outline"
@@ -78,7 +75,7 @@ export function SessionNFT({
             >
               <Download className="w-4 h-4 text-white" />
             </Button>
-          </motion.div>
+          </div>
         </div>
 
         <div className="p-6">
@@ -114,6 +111,6 @@ export function SessionNFT({
           </div>
         </div>
       </Card>
-    </motion.div>
+    </div>
   );
 }

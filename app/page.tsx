@@ -18,7 +18,7 @@ import {
   Lock,
   MessageSquareHeart,
 } from "lucide-react";
-import { motion } from "framer-motion";
+
 import { Slider } from "@/components/ui/slider";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -124,12 +124,7 @@ export default function Home() {
         </div>
         <Ripple className="opacity-60" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="relative space-y-8 text-center"
-        >
+        <div className="relative space-y-8 text-center animate-fade-in">
           {/* Enhanced badge with subtle animation */}
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm hover:border-primary/40 transition-all duration-300">
             <Waves className="w-4 h-4 animate-wave text-primary" />
@@ -156,11 +151,9 @@ export default function Home() {
           </p>
 
           {/* Emotion slider section with enhanced transitions */}
-          <motion.div
-            className="w-full max-w-[600px] mx-auto space-y-6 py-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
+          <div
+            className="w-full max-w-[600px] mx-auto space-y-6 py-8 animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
           >
             <div className="space-y-2 text-center">
               <p className="text-sm text-muted-foreground/80 font-medium">
@@ -208,14 +201,12 @@ export default function Home() {
                 Slide to express how you're feeling today
               </p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Enhanced CTA button and welcome dialog */}
-          <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up"
+            style={{ animationDelay: '200ms' }}
           >
             <Button
               size="lg"
@@ -228,26 +219,24 @@ export default function Home() {
               </span>
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-size-200 bg-pos-0 group-hover:bg-pos-100" />
             </Button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Enhanced scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-fade-in"
+          style={{ animationDelay: '1000ms' }}
         >
           <div className="w-6 h-10 rounded-full border-2 border-primary/20 flex items-start justify-center p-1 hover:border-primary/40 transition-colors duration-300">
             <div className="w-1 h-2 rounded-full bg-primary animate-scroll" />
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Enhanced Features Grid */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <motion.div className="text-center mb-16 space-y-4 text-white ">
+          <div className="text-center mb-16 space-y-4 text-white animate-fade-in">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
               How Aura Helps You
             </h2>
@@ -255,16 +244,14 @@ export default function Home() {
               Experience a new kind of emotional support, powered by empathetic
               AI
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
             {features.map((feature, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: feature.delay, duration: 0.5 }}
-                viewport={{ once: true }}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${feature.delay * 1000}ms` }}
               >
                 <Card className="group relative overflow-hidden border border-primary/10 hover:border-primary/20 transition-all duration-300 h-[200px] bg-card/30 dark:bg-card/80 backdrop-blur-sm">
                   <div
@@ -287,7 +274,7 @@ export default function Home() {
                   </CardContent>
                   <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/20 dark:via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -296,13 +283,9 @@ export default function Home() {
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg">
           <DialogHeader>
-            <motion.div
+            <div
               key={currentStep}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-4"
+              className="space-y-4 animate-fade-in"
             >
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 {welcomeSteps[currentStep] && (
@@ -319,7 +302,7 @@ export default function Home() {
               <DialogDescription className="text-center text-base leading-relaxed">
                 {welcomeSteps[currentStep]?.description}
               </DialogDescription>
-            </motion.div>
+            </div>
           </DialogHeader>
           <div className="flex justify-between items-center mt-8">
             <div className="flex gap-2">

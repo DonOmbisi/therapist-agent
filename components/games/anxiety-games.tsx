@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+
 import { Gamepad2, Flower2, Wind, TreePine, Waves, Music2 } from "lucide-react";
 import {
   Card,
@@ -116,10 +116,9 @@ export const AnxietyGames = ({ onGamePlayed }: AnxietyGamesProps) => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {games.map((game) => (
-              <motion.div
+              <div
                 key={game.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="transform transition-transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Card
                   className={`border-primary/10 hover:bg-primary/5 transition-colors cursor-pointer ${
@@ -149,7 +148,7 @@ export const AnxietyGames = ({ onGamePlayed }: AnxietyGamesProps) => {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
 

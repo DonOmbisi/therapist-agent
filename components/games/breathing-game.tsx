@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { Wind, Check } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -71,13 +71,11 @@ export function BreathingGame() {
   if (isComplete) {
     return (
       <div className="flex flex-col items-center justify-center h-[400px] space-y-6">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center"
+        <div
+          className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center animate-fade-in"
         >
           <Check className="w-10 h-10 text-green-500" />
-        </motion.div>
+        </div>
         <h3 className="text-2xl font-semibold">Great job!</h3>
         <p className="text-muted-foreground text-center max-w-sm">
           You've completed {TOTAL_ROUNDS} rounds of breathing exercises. How do
@@ -92,21 +90,15 @@ export function BreathingGame() {
 
   return (
     <div className="flex flex-col items-center justify-center h-[400px] space-y-8">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={phase}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          className="text-center space-y-4"
+      <div
+        key={phase}
+        className="animate-fade-in text-center space-y-4"
         >
           <div className="relative w-32 h-32 mx-auto">
-            <motion.div
-              animate={{
-                scale: phase === "inhale" ? 1.5 : phase === "exhale" ? 1 : 1.2,
-              }}
-              transition={{ duration: 4, ease: "easeInOut" }}
-              className="absolute inset-0 bg-primary/10 rounded-full"
+            <div
+              className={`absolute inset-0 bg-primary/10 rounded-full transition-transform duration-4000 ${
+                phase === "inhale" ? "scale-150" : phase === "exhale" ? "scale-100" : "scale-120"
+              }`}
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <Wind className="w-8 h-8 text-primary" />
@@ -119,8 +111,7 @@ export function BreathingGame() {
               ? "Hold"
               : "Breathe Out"}
           </h3>
-        </motion.div>
-      </AnimatePresence>
+        </div>
 
       <div className="w-64">
         <Progress value={progress} className="h-2" />
