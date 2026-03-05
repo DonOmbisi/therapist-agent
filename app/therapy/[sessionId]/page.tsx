@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, memo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,10 +37,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BreathingGame } from "@/components/games/breathing-game";
-import { ZenGarden } from "@/components/games/zen-garden";
-import { ForestGame } from "@/components/games/forest-game";
-import { OceanWaves } from "@/components/games/ocean-waves";
+import dynamic from "next/dynamic";
+
+// Dynamically import heavy components
+const BreathingGame = dynamic(() => import("@/components/games/breathing-game").then(mod => ({ default: mod.BreathingGame })), {
+  loading: () => <div>Loading breathing exercise...</div>,
+});
+const ZenGarden = dynamic(() => import("@/components/games/zen-garden").then(mod => ({ default: mod.ZenGarden })), {
+  loading: () => <div>Loading zen garden...</div>,
+});
+const ForestGame = dynamic(() => import("@/components/games/forest-game").then(mod => ({ default: mod.ForestGame })), {
+  loading: () => <div>Loading forest walk...</div>,
+});
+const OceanWaves = dynamic(() => import("@/components/games/ocean-waves").then(mod => ({ default: mod.OceanWaves })), {
+  loading: () => <div>Loading ocean waves...</div>,
+});
 import Link from "next/link";
 import { completeTherapySession } from "@/lib/contracts/therapy-actions";
 // import { Confetti } from "@/components/ui/confetti";
@@ -48,6 +59,7 @@ import { completeTherapySession } from "@/lib/contracts/therapy-actions";
 import Image from "next/image";
 import { Confetti } from "@/app/components/ui/confetti";
 import { ethers } from "ethers";
+import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
 interface Message {
@@ -129,7 +141,7 @@ const glowAnimation = {
 // Add this near the top of the file
 const COMPLETION_THRESHOLD = 5; // Minimum number of messages before allowing completion
 
-export default function TherapyPage() {
+function TherapyPage() {
   const params = useParams();
   const router = useRouter();
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -281,18 +293,10 @@ export default function TherapyPage() {
     setIsTyping(true);
 
     try {
-      // Save user message
-      const savedUserMsg = await saveChatMessage({
-        userId: user.id,
-        message: currentMessage,
-        role: "user",
-        context: { sessionId: params.sessionId },
-      });
-
       setMessages((prev) => [
         ...prev,
         {
-          id: savedUserMsg[0].id,
+          id: crypto.randomUUID(),
           role: "user",
           content: currentMessage,
           timestamp: new Date(),
@@ -322,7 +326,7 @@ export default function TherapyPage() {
       // Update session info with the message
       await updateSessionInfo(currentMessage);
 
-      // Make API call to Gemini AI service
+      // Make API call to OpenAI service (history is stored server-side)
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -338,18 +342,10 @@ export default function TherapyPage() {
       const data = await response.json();
       const aiMessage = data.response;
 
-      // Save AI response to database
-      const savedAiMsg = await saveChatMessage({
-        userId: user.id,
-        message: aiMessage,
-        role: "assistant",
-        context: { sessionId: params.sessionId },
-      });
-
       setMessages((prev) => [
         ...prev,
         {
-          id: savedAiMsg[0].id,
+          id: crypto.randomUUID(),
           role: "assistant",
           content: aiMessage,
           timestamp: new Date(),
@@ -1231,3 +1227,5 @@ export default function TherapyPage() {
     </div>
   );
 }
+
+export default memo(TherapyPage);

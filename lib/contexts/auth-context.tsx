@@ -7,7 +7,6 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { usePrivy } from "@privy-io/react-auth";
 
 interface AuthState {
   isLoading: boolean;
@@ -32,30 +31,6 @@ interface AuthContextType extends AuthState {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Check if Privy is configured
-  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
-  
-  // Always call usePrivy, but handle the case where it's not configured
-  let privyData;
-  try {
-    privyData = usePrivy();
-  } catch (error) {
-    // Fallback if Privy is not available or configured
-    privyData = {
-      login: () => Promise.resolve(),
-      logout: () => Promise.resolve(),
-      authenticated: false,
-      user: null,
-    };
-  }
-  
-  const {
-    login: privyLogin,
-    logout: privyLogout,
-    authenticated,
-    user: privyUser,
-  } = privyData;
-
   const [state, setState] = useState<AuthState>({
     isLoading: false,
     isAuthenticated: false,
@@ -64,130 +39,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     showUserForm: false,
   });
 
-  // Update the authentication effect
-  useEffect(() => {
-    let isSubscribed = true; // Add cleanup flag
-
-    const handleAuthChange = async () => {
-      // Skip if already loading or no change in auth state
-      if (!isSubscribed || !privyUser?.wallet?.address) return;
-
-      const walletAddress = privyUser.wallet.address;
-
-      // Only proceed if authenticated and wallet address changed
-      if (authenticated && walletAddress !== state.user?.walletAddress) {
-        setState((s) => ({ ...s, isLoading: true }));
-        try {
-          const response = await fetch(`/api/users?walletId=${walletAddress}`);
-
-          if (!isSubscribed) return; // Check if still subscribed before updating state
-
-          if (response.ok) {
-            const { user } = await response.json();
-            setState((s) => ({
-              ...s,
-              isAuthenticated: true,
-              user: {
-                ...user,
-                walletAddress,
-              },
-              showUserForm: false,
-              showLoginModal: false,
-              isLoading: false,
-            }));
-          } else if (response.status === 404) {
-            setState((s) => ({
-              ...s,
-              isAuthenticated: false,
-              user: { walletAddress },
-              showUserForm: true,
-              showLoginModal: true,
-              isLoading: false,
-            }));
-          }
-        } catch (error) {
-          if (!isSubscribed) return;
-          console.error("Error checking user:", error);
-          setState((s) => ({ ...s, isLoading: false }));
-        }
-      } else if (!authenticated) {
-        setState((s) => ({
-          ...s,
-          isAuthenticated: false,
-          user: null,
-          isLoading: false,
-        }));
-      }
-    };
-
-    handleAuthChange();
-
-    // Cleanup function
-    return () => {
-      isSubscribed = false;
-    };
-  }, [authenticated, privyUser?.wallet?.address]); // Only depend on these values
-
+  // Simple mock authentication for development
   const login = async () => {
-    setState((s) => ({ ...s, showLoginModal: true }));
-    try {
-      await privyLogin();
-    } catch (error) {
-      console.error("Login error:", error);
-      setState((s) => ({ ...s, showLoginModal: false }));
-    }
+    setState((s) => ({ ...s, isLoading: true }));
+    // Simulate login delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setState((s) => ({
+      ...s,
+      isAuthenticated: true,
+      user: {
+        id: 'user-1',
+        name: 'Demo User',
+        email: 'demo@example.com',
+      },
+      isLoading: false,
+    }));
   };
 
   const logout = async () => {
-    setState((s) => ({ ...s, isLoading: true }));
-    try {
-      await privyLogout();
-      setState((s) => ({
-        ...s,
-        isAuthenticated: false,
-        user: null,
-        showLoginModal: false,
-        showUserForm: false,
-      }));
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      setState((s) => ({ ...s, isLoading: false }));
-    }
+    setState((s) => ({
+      ...s,
+      isAuthenticated: false,
+      user: null,
+    }));
   };
 
-  const updateUser = async (userData: Partial<AuthState["user"]>) => {
-    if (!state.user?.walletAddress) return;
-
-    setState((s) => ({ ...s, isLoading: true }));
-    try {
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...userData,
-          walletId: state.user.walletAddress,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to update user");
-
-      const { user } = await response.json();
-      setState((s) => ({
-        ...s,
-        isAuthenticated: true,
-        user: {
-          ...user,
-          walletAddress: state.user?.walletAddress,
-        },
-        showUserForm: false,
-        showLoginModal: false,
-      }));
-    } catch (error) {
-      console.error("Update user error:", error);
-    } finally {
-      setState((s) => ({ ...s, isLoading: false }));
-    }
+  const updateUser = async (data: Partial<AuthState["user"]>) => {
+    setState((s) => ({
+      ...s,
+      user: s.user ? { ...s.user, ...data } : data,
+    }));
   };
 
   return (

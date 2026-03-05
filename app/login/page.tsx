@@ -2,21 +2,22 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { usePrivy } from "@privy-io/react-auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Brain } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { useAuth } from "@/lib/contexts/auth-context";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, authenticated, ready } = usePrivy();
+  const { login, isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    if (ready && authenticated) {
+    if (isAuthenticated) {
       router.push("/dashboard");
     }
-  }, [ready, authenticated, router]);
+  }, [isAuthenticated, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -32,8 +33,22 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <Button className="w-full" size="lg" onClick={login}>
-            Get Started
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={async () => {
+              await login();
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Connecting...
+              </>
+            ) : (
+              "Get Started"
+            )}
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">

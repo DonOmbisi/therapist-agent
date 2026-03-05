@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
-import { User } from '@/lib/db/schema';
+import { db } from '@/lib/db/dbConfig';
+import { users } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
-    
     const body = await request.json();
     const { email, password, action } = body;
 
     if (action === 'login') {
       // Simple login logic (you can enhance this)
-      const user = await User.findOne({ email });
-      
-      if (!user) {
+      const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+      if (user.length === 0) {
         return NextResponse.json(
           { error: 'User not found' },
           { status: 404 }
@@ -21,7 +20,7 @@ export async function POST(request: NextRequest) {
       }
 
       // In production, add proper password hashing
-      if (user.password !== password) {
+      if (user[0].password !== password) {
         return NextResponse.json(
           { error: 'Invalid credentials' },
           { status: 401 }
@@ -31,18 +30,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         user: {
-          id: user.id,
-          email: user.email,
-          name: user.name
+          id: user[0].id,
+          email: user[0].email,
+          name: user[0].name
         }
       });
     }
 
     if (action === 'register') {
       // Check if user already exists
-      const existingUser = await User.findOne({ email });
-      
-      if (existingUser) {
+      const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+      if (existingUser.length > 0) {
         return NextResponse.json(
           { error: 'User already exists' },
           { status: 400 }
@@ -50,21 +49,19 @@ export async function POST(request: NextRequest) {
       }
 
       // Create new user
-      const newUser = new User({
+      const newUser = await db.insert(users).values({
         email,
         password, // In production, hash this
         name: body.name || 'User',
         createdAt: new Date()
-      });
-
-      await newUser.save();
+      }).returning();
 
       return NextResponse.json({
         success: true,
         user: {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name
+          id: newUser[0].id,
+          email: newUser[0].email,
+          name: newUser[0].name
         }
       });
     }

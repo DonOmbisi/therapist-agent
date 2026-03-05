@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, Suspense } from "react";
+import dynamic from "next/dynamic";
 import {
   Brain,
   Calendar,
@@ -49,9 +50,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FixedChat } from "@/components/chat/fixed-chat";
 import { MoodForm } from "@/components/mood/mood-form";
-import { AnxietyGames } from "@/components/games/anxiety-games";
 import { ExpandableChat } from "@/components/chat/expandable-chat";
 import { MoodTracker } from "@/components/mood/mood-tracker";
 import { FitbitConnect } from "@/components/wearables/fitbit-connect";
@@ -86,6 +85,32 @@ import {
 import { useAuth } from "@/lib/contexts/auth-context";
 import Modal from "@/components/Modal";
 import { ActivityLogger } from "@/components/activities/activity-logger";
+
+// Lazily load heavier interactive widgets so they don't block page navigation
+const FixedChat = dynamic(
+  () =>
+    import("@/components/chat/fixed-chat").then((mod) => ({
+      default: mod.FixedChat,
+    })),
+  {
+    ssr: false,
+  }
+);
+
+const AnxietyGames = dynamic(
+  () =>
+    import("@/components/games/anxiety-games").then((mod) => ({
+      default: mod.AnxietyGames,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border rounded-lg p-4 text-sm text-muted-foreground">
+        Loading anxiety relief activities...
+      </div>
+    ),
+  }
+);
 
 // Add this type definition
 type ActivityLevel = "none" | "low" | "medium" | "high";

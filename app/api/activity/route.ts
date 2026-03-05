@@ -1,36 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
-import { Activity } from '@/lib/db/schema';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db/dbConfig";
+import { activities } from "@/lib/db/schema";
+import { desc, eq, and } from "drizzle-orm";
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
-    
     const body = await request.json();
-    const { userId, type, duration, description, moodBefore, moodAfter } = body;
+    const { userId, type, name, duration, description, difficulty, feedback } = body;
 
-    const newActivity = new Activity({
+    if (!userId || typeof userId !== "string") {
+      return NextResponse.json(
+        { error: "User ID is required and must be a string." },
+        { status: 400 }
+      );
+    }
+
+    if (!type || typeof type !== "string") {
+      return NextResponse.json(
+        { error: "Activity type is required and must be a string." },
+        { status: 400 }
+      );
+    }
+
+    const result = await db.insert(activities).values({
       userId,
       type,
+      name,
       duration,
       description,
-      moodBefore,
-      moodAfter,
-      timestamp: new Date()
-    });
-
-    await newActivity.save();
+      difficulty,
+      feedback,
+    } as any).returning();
 
     return NextResponse.json({
       success: true,
-      activity: newActivity,
-      message: 'Activity recorded successfully'
+      data: result[0],
+      message: "Activity recorded successfully",
     });
-
   } catch (error) {
-    console.error('Activity API error:', error);
+    console.error("Activity API error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
@@ -38,35 +48,35 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
-    
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const type = searchParams.get('type');
-    const limit = searchParams.get('limit') || '10';
+    const userId = searchParams.get("userId");
+    const type = searchParams.get("type");
+    const limit = parseInt(searchParams.get("limit") || "10");
 
     if (!userId) {
       return NextResponse.json(
-        { error: 'User ID required' },
+        { error: "User ID required" },
         { status: 400 }
       );
     }
 
-    let query: any = { userId };
+    let whereCondition = eq(activities.userId, userId);
     if (type) {
-      query.type = type;
+      whereCondition = and(whereCondition, eq(activities.type, type));
     }
 
-    const activities = await Activity.find(query)
-      .sort({ timestamp: -1 })
-      .limit(parseInt(limit));
+    const activityList = await db
+      .select()
+      .from(activities)
+      .where(whereCondition)
+      .orderBy(desc(activities.timestamp))
+      .limit(limit);
 
-    return NextResponse.json({ activities });
-
+    return NextResponse.json({ activities: activityList });
   } catch (error) {
-    console.error('Activity API error:', error);
+    console.error("Activity API error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

@@ -7,8 +7,10 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // Remove all experimental features for faster compilation
-  experimental: {},
+  // Optimize package imports for faster compilation
+  experimental: {
+    optimizePackageImports: ['@radix-ui/react-*', 'lucide-react', 'framer-motion'],
+  },
 
   // Basic image optimization
   images: {

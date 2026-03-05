@@ -9,6 +9,7 @@ import {
   Wifi,
   Heart,
 } from "lucide-react";
+import React from "react";
 
 const features = [
   {
@@ -61,10 +62,10 @@ const features = [
   },
 ];
 
-export default function FeaturesPage() {
+function FeaturesPage() {
   return (
     <div className="container mx-auto px-4 py-24">
-      <div className="text-center mb-16 animate-fade-in">
+      <div className="text-center mb-16">
         <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           Platform Features
         </h1>
@@ -79,8 +80,6 @@ export default function FeaturesPage() {
         {features.map((feature, index) => (
           <div
             key={feature.title}
-            className="animate-fade-in-up"
-            style={{ animationDelay: `${index * 50}ms` }}
           >
             <Card className="p-6 h-full hover:shadow-lg transition-all duration-200 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60 transform hover:scale-[1.02]">
               <div className="mb-4">{feature.icon}</div>
@@ -91,7 +90,7 @@ export default function FeaturesPage() {
         ))}
       </div>
 
-      <div className="text-center mt-16 animate-fade-in" style={{ animationDelay: '400ms' }}>
+      <div className="text-center mt-16">
         <h2 className="text-2xl font-semibold mb-4">Ready to Get Started?</h2>
         <p className="text-muted-foreground mb-8">
           Join thousands of users benefiting from AI-powered mental health
@@ -108,3 +107,5 @@ export default function FeaturesPage() {
     </div>
   );
 }
+
+export default React.memo(FeaturesPage);

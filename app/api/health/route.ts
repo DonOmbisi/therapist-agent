@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/db';
+import { db } from '@/lib/db/dbConfig';
+import { users } from '@/lib/db/schema';
 
 export async function GET() {
   try {
-    // Test database connection
-    await connectDB();
-    
+    // Test database connection with a simple query
+    await db.select().from(users).limit(1);
+
     return NextResponse.json({
       status: 'ok',
       message: 'Aura3.0 API is running',

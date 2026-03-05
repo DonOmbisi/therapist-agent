@@ -19,11 +19,16 @@ import {
   MessageSquareHeart,
 } from "lucide-react";
 
-import { Slider } from "@/components/ui/slider";
 import { useState, useEffect } from "react";
 import React from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
-// Import Dialog components directly (they are lightweight UI components)
+// Lazy load heavy components
+const Slider = dynamic(() => import("@/components/ui/slider").then(mod => ({ default: mod.Slider })), { ssr: false });
+const Ripple = dynamic(() => import("@/components/ui/ripple").then(mod => ({ default: mod.Ripple })), { ssr: false });
+
+// Import Dialog components directly (lightweight and needed for HMR)
 import {
   Dialog,
   DialogContent,
@@ -31,9 +36,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-
-// Import Ripple directly
-import { Ripple } from "@/components/ui/ripple";
 
 
 export default function Home() {
@@ -49,6 +51,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const router = useRouter();
 
   const welcomeSteps = [
     {
@@ -124,10 +127,10 @@ export default function Home() {
         </div>
         <Ripple className="opacity-60" />
 
-        <div className="relative space-y-8 text-center animate-fade-in">
+        <div className="relative space-y-8 text-center">
           {/* Enhanced badge with subtle animation */}
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm hover:border-primary/40 transition-all duration-300">
-            <Waves className="w-4 h-4 animate-wave text-primary" />
+            <Waves className="w-4 h-4 text-primary" />
             <span className="relative text-foreground/90 dark:text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
               Your AI Agent Mental Health Companion
             </span>
@@ -151,10 +154,7 @@ export default function Home() {
           </p>
 
           {/* Emotion slider section with enhanced transitions */}
-          <div
-            className="w-full max-w-[600px] mx-auto space-y-6 py-8 animate-fade-in-up"
-            style={{ animationDelay: '300ms' }}
-          >
+          <div className="w-full max-w-[600px] mx-auto space-y-6 py-8">
             <div className="space-y-2 text-center">
               <p className="text-sm text-muted-foreground/80 font-medium">
                 Whatever you're feeling, we're here to listen
@@ -197,17 +197,14 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <p className="text-sm text-muted-foreground animate-pulse">
+              <p className="text-sm text-muted-foreground">
                 Slide to express how you're feeling today
               </p>
             </div>
           </div>
 
           {/* Enhanced CTA button and welcome dialog */}
-          <div
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up"
-            style={{ animationDelay: '200ms' }}
-          >
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               size="lg"
               onClick={() => setShowDialog(true)}
@@ -223,12 +220,9 @@ export default function Home() {
         </div>
 
         {/* Enhanced scroll indicator */}
-        <div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-fade-in"
-          style={{ animationDelay: '1000ms' }}
-        >
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
           <div className="w-6 h-10 rounded-full border-2 border-primary/20 flex items-start justify-center p-1 hover:border-primary/40 transition-colors duration-300">
-            <div className="w-1 h-2 rounded-full bg-primary animate-scroll" />
+            <div className="w-1 h-2 rounded-full bg-primary" />
           </div>
         </div>
       </section>
@@ -236,7 +230,7 @@ export default function Home() {
       {/* Enhanced Features Grid */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 space-y-4 text-white animate-fade-in">
+          <div className="text-center mb-16 space-y-4 text-white">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
               How Aura Helps You
             </h2>
@@ -248,11 +242,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
             {features.map((feature, index) => (
-              <div
-                key={index}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${feature.delay * 1000}ms` }}
-              >
+              <div key={index}>
                 <Card className="group relative overflow-hidden border border-primary/10 hover:border-primary/20 transition-all duration-300 h-[200px] bg-card/30 dark:bg-card/80 backdrop-blur-sm">
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${feature.color} to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-500 dark:group-hover:opacity-30`}
@@ -283,10 +273,7 @@ export default function Home() {
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg">
           <DialogHeader>
-            <div
-              key={currentStep}
-              className="space-y-4 animate-fade-in"
-            >
+            <div key={currentStep} className="space-y-4">
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 {welcomeSteps[currentStep] && (
                   <div>
@@ -322,7 +309,7 @@ export default function Home() {
                 } else {
                   setShowDialog(false);
                   setCurrentStep(0);
-                  // Here you would navigate to the chat interface
+                  router.push('/dashboard');
                 }
               }}
               className="relative group px-6"

@@ -50,7 +50,7 @@ export const deviceSettings = pgTable("device_settings", {
 // Health metrics
 export const healthMetrics = pgTable("health_metrics", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id").references(() => users.id),
+  userId: text("user_id").references(() => users.id).notNull(),
   metricType: text("metric_type").notNull(), // heart_rate, stress_level, etc.
   value: jsonb("value").notNull(),
   timestamp: timestamp("timestamp").defaultNow(),
@@ -71,7 +71,7 @@ export const userPreferences = pgTable("user_preferences", {
 // AI Chat History
 export const chatHistory = pgTable("chat_history", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id").references(() => users.id),
+  userId: text("user_id").references(() => users.id).notNull(),
   message: text("message").notNull(),
   role: text("role").notNull(), // 'user' or 'assistant'
   timestamp: timestamp("timestamp").defaultNow(),
@@ -102,20 +102,17 @@ export const wearableMetrics = pgTable("wearable_metrics", {
   source: text("source").notNull(), // 'fitbit', 'manual', etc.
 });
 
-// Activities and Tasks
+// Activities
 export const activities = pgTable("activities", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id").references(() => users.id),
-  type: text("type").notNull(), // 'mood', 'meditation', 'exercise', 'therapy', etc.
+  userId: text("user_id").references(() => users.id).notNull(),
+  type: text("type").notNull(),
   name: text("name").notNull(),
+  duration: integer("duration"),
   description: text("description"),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
-  duration: integer("duration"), // in minutes
-  completed: boolean("completed").notNull().default(false),
-  moodScore: integer("mood_score"), // 1-100 if type is 'mood'
-  moodNote: text("mood_note"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  difficulty: text("difficulty"),
+  feedback: text("feedback"),
+  timestamp: timestamp("timestamp").defaultNow(),
 });
 
 // Activity Progress

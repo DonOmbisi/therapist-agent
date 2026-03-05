@@ -1,13 +1,22 @@
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import dynamic from "next/dynamic";
 
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Providers } from "./providers";
-import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import { LoadingBar } from "@/components/ui/loading-bar";
 import { PageTransition } from "@/components/ui/page-transition";
 import { initializePerformanceOptimizations } from "@/lib/utils/performance";
+
+// Only mount the performance monitor in development, and load it lazily
+const PerformanceMonitor = dynamic(
+  () =>
+    import("@/components/ui/performance-monitor").then((mod) => ({
+      default: mod.PerformanceMonitor,
+    })),
+  { ssr: false }
+);
 
 // Initialize the fonts with optimized loading
 const inter = Inter({
@@ -56,7 +65,7 @@ export default function RootLayout({
           <Header />
           <main className="font-plus-jakarta">{children}</main>
           <Footer />
-          <PerformanceMonitor />
+          {process.env.NODE_ENV === "development" && <PerformanceMonitor />}
         </Providers>
       </body>
     </html>
